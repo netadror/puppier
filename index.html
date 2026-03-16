@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puppier — Understand Your Dog's Emotions</title>
+  <meta name="description" content="Scan your dog's face and instantly understand how they feel. Puppier uses AI to decode your dog's emotions in real time.">
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            accent: {
+              50: '#faf8f5',
+              100: '#f5f0e8',
+              200: '#e8dcc8',
+              300: '#d4c4a0',
+              400: '#c2a875',
+              500: '#b5945a',
+              600: '#a7804e',
+              700: '#8b6742',
+              800: '#72543a',
+              900: '#5e4632',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Scan line animation */
+    @keyframes scanLine {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(100px); }
+    }
+    .scan-line {
+      animation: scanLine 2.5s ease-in-out infinite;
+    }
+
+    /* Confidence bar fill animation */
+    @keyframes fillBar {
+      from { width: 0%; }
+      to { width: 92%; }
+    }
+    .confidence-fill {
+      animation: fillBar 1.5s ease-out 0.5s forwards;
+      width: 0%;
+    }
+
+    /* Scan corner pulse */
+    @keyframes cornerPulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    .scan-corner {
+      animation: cornerPulse 2.5s ease-in-out infinite;
+    }
+
+    /* Reveal animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Stagger children */
+    .reveal-stagger .reveal:nth-child(1) { transition-delay: 0ms; }
+    .reveal-stagger .reveal:nth-child(2) { transition-delay: 120ms; }
+    .reveal-stagger .reveal:nth-child(3) { transition-delay: 240ms; }
+    .reveal-stagger .reveal:nth-child(4) { transition-delay: 360ms; }
+    .reveal-stagger .reveal:nth-child(5) { transition-delay: 480ms; }
+    .reveal-stagger .reveal:nth-child(6) { transition-delay: 600ms; }
+  </style>
+</head>
+
+<body class="bg-white text-stone-800 font-sans antialiased">
+
+  <!-- ===== NAVBAR ===== -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-stone-100 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 text-stone-900 font-bold text-xl">
+        <i data-lucide="dog" class="w-6 h-6 text-accent-600"></i>
+        Puppier
+      </a>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#how-it-works" class="text-sm text-stone-500 hover:text-stone-900 transition-colors">How it works</a>
+        <a href="#features" class="text-sm text-stone-500 hover:text-stone-900 transition-colors">Features</a>
+        <a href="#testimonials" class="text-sm text-stone-500 hover:text-stone-900 transition-colors">Testimonials</a>
+        <a href="#download" class="inline-flex items-center gap-2 bg-stone-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl hover:bg-stone-800 transition-colors">
+          Download
+          <i data-lucide="arrow-down-to-line" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button id="menu-toggle" class="md:hidden p-2 text-stone-600 hover:text-stone-900 transition-colors" aria-label="Toggle menu">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-stone-100 bg-white/95 backdrop-blur-lg">
+      <div class="px-6 py-4 flex flex-col gap-3">
+        <a href="#how-it-works" class="text-sm text-stone-600 hover:text-stone-900 py-2 transition-colors">How it works</a>
+        <a href="#features" class="text-sm text-stone-600 hover:text-stone-900 py-2 transition-colors">Features</a>
+        <a href="#testimonials" class="text-sm text-stone-600 hover:text-stone-900 py-2 transition-colors">Testimonials</a>
+        <a href="#download" class="inline-flex items-center justify-center gap-2 bg-stone-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl hover:bg-stone-800 transition-colors mt-1">
+          Download
+          <i data-lucide="arrow-down-to-line" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="pt-32 pb-20 lg:pt-40 lg:pb-28">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+        <!-- Text -->
+        <div class="flex-1 text-center lg:text-left">
+          <div class="reveal">
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-accent-700 bg-accent-100 px-3 py-1 rounded-lg mb-6">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+              AI-powered emotion detection
+            </span>
+          </div>
+          <h1 class="reveal text-4xl sm:text-5xl lg:text-6xl font-bold text-stone-900 leading-tight tracking-tight">
+            Understand your<br>dog's emotions<br>
+            <span class="text-accent-600">instantly</span>
+          </h1>
+          <p class="reveal mt-6 text-lg text-stone-500 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+            Point your camera at your dog and let Puppier decode what they're feeling. Simple, fast, and surprisingly accurate.
+          </p>
+          <div class="reveal mt-8 flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start" id="download">
+            <a href="#" class="inline-flex items-center gap-3 bg-stone-900 text-white font-medium pl-4 pr-6 py-3 rounded-xl hover:bg-stone-800 transition-colors w-full sm:w-auto justify-center">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+              <div class="text-left">
+                <div class="text-[10px] leading-none opacity-80">Download on the</div>
+                <div class="text-base leading-tight font-semibold">App Store</div>
+              </div>
+            </a>
+            <a href="#" class="inline-flex items-center gap-3 bg-stone-900 text-white font-medium pl-4 pr-6 py-3 rounded-xl hover:bg-stone-800 transition-colors w-full sm:w-auto justify-center">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.807 1.626a1 1 0 0 1 0 1.732l-2.807 1.626L15.206 12l2.492-2.492zM5.864 2.658L16.8 9.29l-2.302 2.302-8.634-8.634z"/></svg>
+              <div class="text-left">
+                <div class="text-[10px] leading-none opacity-80">Get it on</div>
+                <div class="text-base leading-tight font-semibold">Google Play</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Phone Mockup -->
+        <div class="flex-1 flex justify-center reveal">
+          <div class="relative w-[280px] sm:w-[320px]">
+            <svg viewBox="0 0 320 640" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full drop-shadow-xl">
+              <!-- Phone Frame -->
+              <rect x="4" y="4" width="312" height="632" rx="40" fill="#1c1917" stroke="#292524" stroke-width="2"/>
+              <rect x="12" y="12" width="296" height="616" rx="34" fill="#fafaf9"/>
+
+              <!-- Status Bar -->
+              <text x="32" y="40" font-family="Inter, sans-serif" font-size="11" fill="#78716c" font-weight="500">9:41</text>
+              <circle cx="270" cy="36" r="4" fill="#78716c"/>
+              <rect x="278" y="32" width="16" height="8" rx="2" fill="#78716c"/>
+              <circle cx="258" cy="36" r="4" fill="#78716c"/>
+
+              <!-- Notch -->
+              <rect x="110" y="4" width="100" height="28" rx="14" fill="#1c1917"/>
+
+              <!-- Camera View Background -->
+              <rect x="20" y="56" width="280" height="370" rx="16" fill="#f5f5f4"/>
+
+              <!-- Dog Face Illustration -->
+              <!-- Head -->
+              <ellipse cx="160" cy="220" rx="68" ry="72" fill="#d6d3d1"/>
+              <!-- Inner face -->
+              <ellipse cx="160" cy="230" rx="50" ry="52" fill="#e7e5e4"/>
+              <!-- Left ear -->
+              <path d="M95 170 Q85 110 110 140 Q115 155 108 175Z" fill="#a8a29e"/>
+              <!-- Right ear -->
+              <path d="M225 170 Q235 110 210 140 Q205 155 212 175Z" fill="#a8a29e"/>
+              <!-- Left eye -->
+              <ellipse cx="135" cy="210" rx="11" ry="12" fill="#44403c"/>
+              <ellipse cx="137" cy="207" rx="4" ry="4" fill="white" opacity="0.8"/>
+              <!-- Right eye -->
+              <ellipse cx="185" cy="210" rx="11" ry="12" fill="#44403c"/>
+              <ellipse cx="187" cy="207" rx="4" ry="4" fill="white" opacity="0.8"/>
+              <!-- Nose -->
+              <ellipse cx="160" cy="242" rx="10" ry="8" fill="#57534e"/>
+              <!-- Mouth -->
+              <path d="M148 254 Q160 266 172 254" stroke="#78716c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <!-- Tongue -->
+              <ellipse cx="160" cy="264" rx="7" ry="9" fill="#f4a88e" opacity="0.8"/>
+
+              <!-- Scan Corners -->
+              <g class="scan-corner" stroke="#b5945a" stroke-width="3" stroke-linecap="round" fill="none">
+                <!-- Top Left -->
+                <path d="M88 155 L88 140 L103 140"/>
+                <!-- Top Right -->
+                <path d="M232 155 L232 140 L217 140"/>
+                <!-- Bottom Left -->
+                <path d="M88 295 L88 310 L103 310"/>
+                <!-- Bottom Right -->
+                <path d="M232 295 L232 310 L217 310"/>
+              </g>
+
+              <!-- Scan Line -->
+              <g class="scan-line">
+                <line x1="92" y1="155" x2="228" y2="155" stroke="#b5945a" stroke-width="2" opacity="0.6"/>
+                <line x1="92" y1="155" x2="228" y2="155" stroke="#b5945a" stroke-width="6" opacity="0.15"/>
+              </g>
+
+              <!-- Bottom Result Card -->
+              <rect x="20" y="440" width="280" height="180" rx="16" fill="white"/>
+              <rect x="20" y="440" width="280" height="180" rx="16" stroke="#e7e5e4" stroke-width="1"/>
+
+              <!-- Result Header -->
+              <text x="40" y="474" font-family="Inter, sans-serif" font-size="12" fill="#a8a29e" font-weight="500">EMOTION DETECTED</text>
+
+              <!-- Emotion Icon + Label -->
+              <circle cx="52" cy="506" r="16" fill="#faf8f5"/>
+              <text x="46" y="512" font-family="Inter, sans-serif" font-size="16">:)</text>
+              <text x="78" y="512" font-family="Inter, sans-serif" font-size="22" fill="#1c1917" font-weight="700">Happy</text>
+
+              <!-- Confidence Bar -->
+              <text x="40" y="548" font-family="Inter, sans-serif" font-size="12" fill="#a8a29e" font-weight="500">Confidence</text>
+              <text x="240" y="548" font-family="Inter, sans-serif" font-size="12" fill="#b5945a" font-weight="600">92%</text>
+              <rect x="40" y="558" width="240" height="8" rx="4" fill="#f5f5f4"/>
+              <rect x="40" y="558" width="221" height="8" rx="4" fill="#b5945a" class="confidence-fill"/>
+
+              <!-- Secondary Emotions -->
+              <text x="40" y="596" font-family="Inter, sans-serif" font-size="11" fill="#78716c">Excited 78%</text>
+              <text x="140" y="596" font-family="Inter, sans-serif" font-size="11" fill="#78716c">Relaxed 45%</text>
+
+              <!-- Home Indicator -->
+              <rect x="120" y="618" width="80" height="4" rx="2" fill="#d6d3d1"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how-it-works" class="py-20 lg:py-28 bg-stone-50/50">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="reveal text-3xl sm:text-4xl font-bold text-stone-900 tracking-tight">How it works</h2>
+        <p class="reveal mt-4 text-stone-500 text-lg max-w-xl mx-auto">Three simple steps to understanding your pup better.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 reveal-stagger">
+        <!-- Step 1 -->
+        <div class="reveal bg-white rounded-2xl p-8 border border-stone-100 hover:border-stone-200 hover:shadow-sm transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center mb-5">
+            <i data-lucide="camera" class="w-6 h-6 text-accent-600"></i>
+          </div>
+          <span class="text-xs font-semibold text-accent-600 uppercase tracking-wider">Step 1</span>
+          <h3 class="mt-2 text-xl font-semibold text-stone-900">Open the camera</h3>
+          <p class="mt-3 text-stone-500 leading-relaxed">Launch the app and point your phone's camera at your dog. No setup required.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="reveal bg-white rounded-2xl p-8 border border-stone-100 hover:border-stone-200 hover:shadow-sm transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center mb-5">
+            <i data-lucide="scan-face" class="w-6 h-6 text-accent-600"></i>
+          </div>
+          <span class="text-xs font-semibold text-accent-600 uppercase tracking-wider">Step 2</span>
+          <h3 class="mt-2 text-xl font-semibold text-stone-900">Scan their face</h3>
+          <p class="mt-3 text-stone-500 leading-relaxed">Our AI detects your dog's facial features and analyzes their expression in real time.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="reveal bg-white rounded-2xl p-8 border border-stone-100 hover:border-stone-200 hover:shadow-sm transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center mb-5">
+            <i data-lucide="heart" class="w-6 h-6 text-accent-600"></i>
+          </div>
+          <span class="text-xs font-semibold text-accent-600 uppercase tracking-wider">Step 3</span>
+          <h3 class="mt-2 text-xl font-semibold text-stone-900">See how they feel</h3>
+          <p class="mt-3 text-stone-500 leading-relaxed">Get an instant read on your dog's emotional state with confidence scores and details.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section id="features" class="py-20 lg:py-28">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="reveal text-3xl sm:text-4xl font-bold text-stone-900 tracking-tight">Built for dog people</h2>
+        <p class="reveal mt-4 text-stone-500 text-lg max-w-xl mx-auto">Everything you need to better understand your furry companion.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 reveal-stagger">
+        <!-- Feature 1 -->
+        <div class="reveal group rounded-2xl p-7 border border-stone-100 hover:border-stone-200 hover:shadow-sm transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-stone-50 flex items-center justify-center mb-4 group-hover:bg-accent-50 transition-colors">
+            <i data-lucide="zap" class="w-5 h-5 text-stone-400 group-hover:text-accent-600 transition-colors"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-stone-900">Real-time scanning</h3>
+          <p class="mt-2 text-stone-500 text-sm leading-relaxed">Results appear as fast as your dog moves. No waiting, no lag.</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="reveal group rounded-2xl p-7 border border-stone-100 hover:border-stone-200 hover:shadow-sm transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-stone-50 flex items-center justify-center mb-4 group-hover:bg-accent-50 transition-colors">
+            <i data-lucide="smile-plus" class="w-5 h-5 text-stone-400 group-hover:text-accent-600 transition-colors"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-stone-900">10+ emotion types</h3>
+          <p class="mt-2 text-stone-500 text-sm leading-relaxed">From happy and relaxed to anxious and curious — we cover the full emotional spectrum.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="reveal group rounded-2xl p-7 border border-stone-100 hover:border-stone-200 hover:shadow-sm transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-stone-50 flex items-center justify-center mb-4 group-hover:bg-accent-50 transition-colors">
+            <i data-lucide="dog" class="w-5 h-5 text-stone-400 group-hover:text-accent-600 transition-colors"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-stone-900">Works with all breeds</h3>
+          <p class="mt-2 text-stone-500 text-sm leading-relaxed">Trained on 200+ breeds. From Chihuahuas to Great Danes, we've got them all.</p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="reveal group rounded-2xl p-7 border border-stone-100 hover:border-stone-200 hover:shadow-sm transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-stone-50 flex items-center justify-center mb-4 group-hover:bg-accent-50 transition-colors">
+            <i data-lucide="bar-chart-3" class="w-5 h-5 text-stone-400 group-hover:text-accent-600 transition-colors"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-stone-900">History & trends</h3>
+          <p class="mt-2 text-stone-500 text-sm leading-relaxed">Track your dog's mood over time and spot patterns in their emotional well-being.</p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="reveal group rounded-2xl p-7 border border-stone-100 hover:border-stone-200 hover:shadow-sm transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-stone-50 flex items-center justify-center mb-4 group-hover:bg-accent-50 transition-colors">
+            <i data-lucide="shield-check" class="w-5 h-5 text-stone-400 group-hover:text-accent-600 transition-colors"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-stone-900">Privacy first</h3>
+          <p class="mt-2 text-stone-500 text-sm leading-relaxed">All processing happens on-device. Your dog's face never leaves your phone.</p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="reveal group rounded-2xl p-7 border border-stone-100 hover:border-stone-200 hover:shadow-sm transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-stone-50 flex items-center justify-center mb-4 group-hover:bg-accent-50 transition-colors">
+            <i data-lucide="share-2" class="w-5 h-5 text-stone-400 group-hover:text-accent-600 transition-colors"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-stone-900">Share with your vet</h3>
+          <p class="mt-2 text-stone-500 text-sm leading-relaxed">Export emotion reports and share insights with your veterinarian during visits.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section id="testimonials" class="py-20 lg:py-28 bg-stone-50/50">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="reveal text-3xl sm:text-4xl font-bold text-stone-900 tracking-tight">Loved by dog parents</h2>
+        <p class="reveal mt-4 text-stone-500 text-lg max-w-xl mx-auto">See what pet owners are saying about Puppier.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 reveal-stagger">
+        <!-- Testimonial 1 -->
+        <div class="reveal bg-white rounded-2xl p-7 border border-stone-100">
+          <div class="flex items-center gap-1 mb-4">
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+          </div>
+          <p class="text-stone-600 leading-relaxed">"I always wondered what my golden retriever was thinking. Puppier confirmed what I suspected — she's happy 90% of the time and mildly concerned about the mailman."</p>
+          <div class="mt-6 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-sm font-semibold text-stone-500">SR</div>
+            <div>
+              <p class="text-sm font-medium text-stone-900">Sarah R.</p>
+              <p class="text-xs text-stone-400">Dog parent</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="reveal bg-white rounded-2xl p-7 border border-stone-100">
+          <div class="flex items-center gap-1 mb-4">
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+          </div>
+          <p class="text-stone-600 leading-relaxed">"Used Puppier to figure out why my rescue was acting off. Turns out he was anxious during thunderstorms. Knowing that helped me get him the right support."</p>
+          <div class="mt-6 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-sm font-semibold text-stone-500">MK</div>
+            <div>
+              <p class="text-sm font-medium text-stone-900">Marcus K.</p>
+              <p class="text-xs text-stone-400">Dog parent</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="reveal bg-white rounded-2xl p-7 border border-stone-100">
+          <div class="flex items-center gap-1 mb-4">
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+            <i data-lucide="star" class="w-4 h-4 text-accent-500 fill-accent-500"></i>
+          </div>
+          <p class="text-stone-600 leading-relaxed">"My vet actually asked me about the emotion reports I brought in. She said it gave her useful context for our pug's behavioral assessment. Super practical app."</p>
+          <div class="mt-6 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-sm font-semibold text-stone-500">JL</div>
+            <div>
+              <p class="text-sm font-medium text-stone-900">Jamie L.</p>
+              <p class="text-xs text-stone-400">Dog parent</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="py-12 border-t border-stone-100">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <!-- Logo -->
+        <div class="flex items-center gap-2 text-stone-900 font-bold text-lg">
+          <i data-lucide="dog" class="w-5 h-5 text-accent-600"></i>
+          Puppier
+        </div>
+
+        <!-- Links -->
+        <div class="flex items-center gap-6 text-sm text-stone-400">
+          <a href="#" class="hover:text-stone-600 transition-colors">Privacy</a>
+          <a href="#" class="hover:text-stone-600 transition-colors">Terms</a>
+          <a href="#" class="hover:text-stone-600 transition-colors">Support</a>
+        </div>
+
+        <!-- Social -->
+        <div class="flex items-center gap-4">
+          <a href="#" class="text-stone-300 hover:text-stone-500 transition-colors" aria-label="Twitter">
+            <i data-lucide="twitter" class="w-5 h-5"></i>
+          </a>
+          <a href="#" class="text-stone-300 hover:text-stone-500 transition-colors" aria-label="Instagram">
+            <i data-lucide="instagram" class="w-5 h-5"></i>
+          </a>
+          <a href="#" class="text-stone-300 hover:text-stone-500 transition-colors" aria-label="GitHub">
+            <i data-lucide="github" class="w-5 h-5"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center text-xs text-stone-300">
+        &copy; 2026 Puppier. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+      });
+    });
+
+    // Scroll Reveal with IntersectionObserver
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    revealElements.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
