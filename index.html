@@ -55,7 +55,7 @@
     /* Confidence bar fill animation */
     @keyframes fillBar {
       from { width: 0; }
-      to { width: 221px; }
+      to { width: 199px; }
     }
     .confidence-fill {
       animation: fillBar 1.5s ease-out 0.5s forwards;
@@ -173,88 +173,143 @@
 
         <!-- Phone Mockup -->
         <div class="flex-1 flex justify-center reveal">
-          <div class="relative w-[280px] sm:w-[320px]">
-            <svg viewBox="0 0 320 640" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full drop-shadow-xl">
+          <div class="relative w-[220px] sm:w-[260px]">
+            <svg viewBox="0 0 280 560" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full" style="filter: drop-shadow(0 20px 40px rgba(28,25,23,0.12)) drop-shadow(0 8px 16px rgba(28,25,23,0.06));">
               <!-- Phone Frame -->
-              <rect x="4" y="4" width="312" height="632" rx="40" fill="#1c1917" stroke="#292524" stroke-width="2"/>
-              <rect x="12" y="12" width="296" height="616" rx="34" fill="#fafaf9"/>
+              <rect x="2" y="2" width="276" height="556" rx="36" fill="#1c1917"/>
+              <rect x="3" y="3" width="274" height="554" rx="35" stroke="#3f3f46" stroke-width="0.5" fill="none"/>
+              <!-- Screen -->
+              <rect x="8" y="8" width="264" height="544" rx="30" fill="#fafaf9"/>
+
+              <!-- Dynamic Island -->
+              <rect x="100" y="14" width="80" height="24" rx="12" fill="#1c1917"/>
+              <circle cx="130" cy="26" r="4" fill="#27272a"/>
+              <circle cx="130" cy="26" r="2" fill="#3f3f46"/>
 
               <!-- Status Bar -->
-              <text x="32" y="40" font-family="Inter, sans-serif" font-size="11" fill="#78716c" font-weight="500">9:41</text>
-              <circle cx="270" cy="36" r="4" fill="#78716c"/>
-              <rect x="278" y="32" width="16" height="8" rx="2" fill="#78716c"/>
-              <circle cx="258" cy="36" r="4" fill="#78716c"/>
-
-              <!-- Notch -->
-              <rect x="110" y="4" width="100" height="28" rx="14" fill="#1c1917"/>
+              <text x="26" y="32" font-family="Inter, sans-serif" font-size="10" fill="#78716c" font-weight="600">9:41</text>
+              <!-- Signal bars -->
+              <g transform="translate(220, 24)">
+                <rect x="0" y="5" width="3" height="3" rx="0.5" fill="#78716c"/>
+                <rect x="4" y="3" width="3" height="5" rx="0.5" fill="#78716c"/>
+                <rect x="8" y="1" width="3" height="7" rx="0.5" fill="#78716c"/>
+                <rect x="12" y="-1" width="3" height="9" rx="0.5" fill="#78716c"/>
+              </g>
+              <!-- Battery -->
+              <rect x="242" y="24" width="18" height="9" rx="2" stroke="#78716c" stroke-width="1" fill="none"/>
+              <rect x="244" y="26" width="12" height="5" rx="1" fill="#78716c"/>
+              <rect x="260" y="27" width="2" height="4" rx="1" fill="#78716c"/>
 
               <!-- Camera View Background -->
-              <rect x="20" y="56" width="280" height="370" rx="16" fill="#f5f5f4"/>
+              <rect x="16" y="46" width="248" height="310" rx="14" fill="#f0eeec"/>
+              <!-- Subtle grid pattern for camera -->
+              <line x1="99" y1="46" x2="99" y2="356" stroke="#e7e5e4" stroke-width="0.5" opacity="0.5"/>
+              <line x1="181" y1="46" x2="181" y2="356" stroke="#e7e5e4" stroke-width="0.5" opacity="0.5"/>
+              <line x1="16" y1="150" x2="264" y2="150" stroke="#e7e5e4" stroke-width="0.5" opacity="0.5"/>
+              <line x1="16" y1="252" x2="264" y2="252" stroke="#e7e5e4" stroke-width="0.5" opacity="0.5"/>
 
-              <!-- Dog Face Illustration -->
-              <!-- Head -->
-              <ellipse cx="160" cy="220" rx="68" ry="72" fill="#d6d3d1"/>
-              <!-- Inner face -->
-              <ellipse cx="160" cy="230" rx="50" ry="52" fill="#e7e5e4"/>
-              <!-- Left ear -->
-              <path d="M95 170 Q85 110 110 140 Q115 155 108 175Z" fill="#a8a29e"/>
-              <!-- Right ear -->
-              <path d="M225 170 Q235 110 210 140 Q205 155 212 175Z" fill="#a8a29e"/>
+              <!-- Dog Face — Golden Retriever style -->
+              <!-- Fur base / head shape -->
+              <ellipse cx="140" cy="195" rx="62" ry="66" fill="#d4b896"/>
+              <!-- Fur texture highlights -->
+              <ellipse cx="140" cy="195" rx="58" ry="62" fill="#dcc4a0"/>
+              <!-- Forehead lighter area -->
+              <ellipse cx="140" cy="178" rx="30" ry="22" fill="#e5d2b3" opacity="0.6"/>
+
+              <!-- Left ear (floppy) -->
+              <path d="M78 175 C72 145, 65 130, 72 115 C80 100, 92 108, 95 125 C98 140, 92 165, 88 180Z" fill="#c4a070"/>
+              <path d="M82 170 C78 148, 73 138, 78 125 C84 112, 90 118, 92 130 C94 142, 90 160, 88 172Z" fill="#ccaa7c" opacity="0.5"/>
+              <!-- Right ear (floppy) -->
+              <path d="M202 175 C208 145, 215 130, 208 115 C200 100, 188 108, 185 125 C182 140, 188 165, 192 180Z" fill="#c4a070"/>
+              <path d="M198 170 C202 148, 207 138, 202 125 C196 112, 190 118, 188 130 C186 142, 190 160, 192 172Z" fill="#ccaa7c" opacity="0.5"/>
+
+              <!-- Muzzle / snout area -->
+              <ellipse cx="140" cy="218" rx="28" ry="24" fill="#e8dcc8"/>
+              <ellipse cx="140" cy="222" rx="22" ry="18" fill="#f0e6d6"/>
+
               <!-- Left eye -->
-              <ellipse cx="135" cy="210" rx="11" ry="12" fill="#44403c"/>
-              <ellipse cx="137" cy="207" rx="4" ry="4" fill="white" opacity="0.8"/>
+              <ellipse cx="118" cy="190" rx="10" ry="11" fill="white"/>
+              <ellipse cx="119" cy="191" rx="7" ry="8" fill="#3d2b1f"/>
+              <ellipse cx="121" cy="188" rx="3" ry="3" fill="white" opacity="0.85"/>
+              <!-- Left eyebrow -->
+              <path d="M106 178 Q118 172 130 178" stroke="#b89a6a" stroke-width="2" fill="none" stroke-linecap="round"/>
+
               <!-- Right eye -->
-              <ellipse cx="185" cy="210" rx="11" ry="12" fill="#44403c"/>
-              <ellipse cx="187" cy="207" rx="4" ry="4" fill="white" opacity="0.8"/>
+              <ellipse cx="162" cy="190" rx="10" ry="11" fill="white"/>
+              <ellipse cx="161" cy="191" rx="7" ry="8" fill="#3d2b1f"/>
+              <ellipse cx="163" cy="188" rx="3" ry="3" fill="white" opacity="0.85"/>
+              <!-- Right eyebrow -->
+              <path d="M150 178 Q162 172 174 178" stroke="#b89a6a" stroke-width="2" fill="none" stroke-linecap="round"/>
+
               <!-- Nose -->
-              <ellipse cx="160" cy="242" rx="10" ry="8" fill="#57534e"/>
+              <ellipse cx="140" cy="215" rx="9" ry="7" fill="#3d2b1f"/>
+              <ellipse cx="140" cy="214" rx="6" ry="4" fill="#5c4033" opacity="0.5"/>
+              <!-- Nose shine -->
+              <ellipse cx="138" cy="213" rx="2.5" ry="1.5" fill="white" opacity="0.25"/>
+
               <!-- Mouth -->
-              <path d="M148 254 Q160 266 172 254" stroke="#78716c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <path d="M140 222 L140 228" stroke="#6b5544" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M130 230 Q140 240 150 230" stroke="#6b5544" stroke-width="1.5" fill="none" stroke-linecap="round"/>
               <!-- Tongue -->
-              <ellipse cx="160" cy="264" rx="7" ry="9" fill="#f4a88e" opacity="0.8"/>
+              <ellipse cx="140" cy="238" rx="6" ry="7" fill="#e8907a"/>
+              <ellipse cx="140" cy="236" rx="4" ry="4" fill="#f0a090" opacity="0.6"/>
+
+              <!-- Cheek dots (whisker spots) -->
+              <circle cx="108" cy="218" r="1.2" fill="#c4a070" opacity="0.5"/>
+              <circle cx="112" cy="222" r="1.2" fill="#c4a070" opacity="0.5"/>
+              <circle cx="105" cy="224" r="1.2" fill="#c4a070" opacity="0.5"/>
+              <circle cx="172" cy="218" r="1.2" fill="#c4a070" opacity="0.5"/>
+              <circle cx="168" cy="222" r="1.2" fill="#c4a070" opacity="0.5"/>
+              <circle cx="175" cy="224" r="1.2" fill="#c4a070" opacity="0.5"/>
 
               <!-- Scan Corners -->
-              <g class="scan-corner" stroke="#b5945a" stroke-width="3" stroke-linecap="round" fill="none">
-                <!-- Top Left -->
-                <path d="M88 155 L88 140 L103 140"/>
-                <!-- Top Right -->
-                <path d="M232 155 L232 140 L217 140"/>
-                <!-- Bottom Left -->
-                <path d="M88 295 L88 310 L103 310"/>
-                <!-- Bottom Right -->
-                <path d="M232 295 L232 310 L217 310"/>
+              <g class="scan-corner" stroke="#b5945a" stroke-width="2.5" stroke-linecap="round" fill="none">
+                <path d="M80 140 L80 126 L94 126"/>
+                <path d="M200 140 L200 126 L186 126"/>
+                <path d="M80 268 L80 282 L94 282"/>
+                <path d="M200 268 L200 282 L186 282"/>
               </g>
 
               <!-- Scan Line -->
               <g class="scan-line">
-                <line x1="92" y1="155" x2="228" y2="155" stroke="#b5945a" stroke-width="2" opacity="0.6"/>
-                <line x1="92" y1="155" x2="228" y2="155" stroke="#b5945a" stroke-width="6" opacity="0.15"/>
+                <line x1="84" y1="140" x2="196" y2="140" stroke="#b5945a" stroke-width="1.5" opacity="0.7"/>
+                <line x1="84" y1="140" x2="196" y2="140" stroke="#b5945a" stroke-width="5" opacity="0.1"/>
               </g>
 
               <!-- Bottom Result Card -->
-              <rect x="20" y="440" width="280" height="180" rx="16" fill="white"/>
-              <rect x="20" y="440" width="280" height="180" rx="16" stroke="#e7e5e4" stroke-width="1"/>
+              <rect x="16" y="368" width="248" height="172" rx="14" fill="white"/>
+              <rect x="16" y="368" width="248" height="172" rx="14" stroke="#e7e5e4" stroke-width="0.75"/>
 
               <!-- Result Header -->
-              <text x="40" y="474" font-family="Inter, sans-serif" font-size="12" fill="#a8a29e" font-weight="500">EMOTION DETECTED</text>
+              <text x="32" y="396" font-family="Inter, sans-serif" font-size="9" fill="#a8a29e" font-weight="600" letter-spacing="0.8">EMOTION DETECTED</text>
 
-              <!-- Emotion Icon + Label -->
-              <circle cx="52" cy="506" r="16" fill="#faf8f5"/>
-              <text x="46" y="512" font-family="Inter, sans-serif" font-size="16">:)</text>
-              <text x="78" y="512" font-family="Inter, sans-serif" font-size="22" fill="#1c1917" font-weight="700">Happy</text>
+              <!-- Emotion circle with icon -->
+              <circle cx="46" cy="424" r="14" fill="#faf8f5" stroke="#f0ebe0" stroke-width="0.75"/>
+              <!-- Happy face icon -->
+              <circle cx="41" cy="422" r="1.5" fill="#b5945a"/>
+              <circle cx="51" cy="422" r="1.5" fill="#b5945a"/>
+              <path d="M40 427 Q46 432 52 427" stroke="#b5945a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+              <text x="68" y="430" font-family="Inter, sans-serif" font-size="20" fill="#1c1917" font-weight="700">Happy</text>
 
               <!-- Confidence Bar -->
-              <text x="40" y="548" font-family="Inter, sans-serif" font-size="12" fill="#a8a29e" font-weight="500">Confidence</text>
-              <text x="240" y="548" font-family="Inter, sans-serif" font-size="12" fill="#b5945a" font-weight="600">92%</text>
-              <rect x="40" y="558" width="240" height="8" rx="4" fill="#f5f5f4"/>
-              <rect x="40" y="558" width="221" height="8" rx="4" fill="#b5945a" class="confidence-fill"/>
+              <text x="32" y="458" font-family="Inter, sans-serif" font-size="10" fill="#a8a29e" font-weight="500">Confidence</text>
+              <text x="218" y="458" font-family="Inter, sans-serif" font-size="10" fill="#b5945a" font-weight="700">92%</text>
+              <rect x="32" y="466" width="216" height="6" rx="3" fill="#f5f0e8"/>
+              <rect x="32" y="466" width="199" height="6" rx="3" fill="#b5945a" class="confidence-fill"/>
 
-              <!-- Secondary Emotions -->
-              <text x="40" y="596" font-family="Inter, sans-serif" font-size="11" fill="#78716c">Excited 78%</text>
-              <text x="140" y="596" font-family="Inter, sans-serif" font-size="11" fill="#78716c">Relaxed 45%</text>
+              <!-- Secondary Emotions as pills -->
+              <rect x="32" y="486" width="72" height="24" rx="12" fill="#faf8f5" stroke="#f0ebe0" stroke-width="0.75"/>
+              <text x="44" y="502" font-family="Inter, sans-serif" font-size="9" fill="#78716c" font-weight="500">Excited 78%</text>
+
+              <rect x="112" y="486" width="74" height="24" rx="12" fill="#faf8f5" stroke="#f0ebe0" stroke-width="0.75"/>
+              <text x="123" y="502" font-family="Inter, sans-serif" font-size="9" fill="#78716c" font-weight="500">Relaxed 45%</text>
+
+              <rect x="194" y="486" width="58" height="24" rx="12" fill="#faf8f5" stroke="#f0ebe0" stroke-width="0.75"/>
+              <text x="205" y="502" font-family="Inter, sans-serif" font-size="9" fill="#78716c" font-weight="500">Alert 22%</text>
 
               <!-- Home Indicator -->
-              <rect x="120" y="618" width="80" height="4" rx="2" fill="#d6d3d1"/>
+              <rect x="104" y="540" width="72" height="4" rx="2" fill="#d6d3d1"/>
             </svg>
           </div>
         </div>
